@@ -6,7 +6,7 @@ const AUTH_API_URL = "http://localhost:8080/auth"
 
 export const loginUser = async (auth: LoginType) => {
     const user = useUserStore();
-    const router = useRouter();
+
 
     await fetch(`${AUTH_API_URL}/login`, {
         method: "POST",
@@ -18,17 +18,12 @@ export const loginUser = async (auth: LoginType) => {
 
         if (response.ok) {
             user.setUser(result);
-
-            router.push({
-                name: "dashboard"
-            })
         }
     })
 }
 
 export const logoutUser = async () => {
     const user = useUserStore();
-    const router = useRouter();
 
     await fetch(`${AUTH_API_URL}/logout`, {
         method: "POST",
@@ -36,10 +31,6 @@ export const logoutUser = async () => {
     }).then(async (response) => {
         if (response.ok) {
             user.clearUser();
-
-            router.push({
-                name: "login"
-            })
         }
     })
 }

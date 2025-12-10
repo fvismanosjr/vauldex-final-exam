@@ -20,7 +20,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { loginUser } from "@/services/auth"
 import type { LoginType } from "@/types/types"
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const props = defineProps<{
     class?: HTMLAttributes["class"]
 }>()
@@ -32,6 +34,10 @@ const user = ref<LoginType>({
 
 const login = async () => {
     await loginUser(user.value)
+
+    router.push({
+        name: "dashboard"
+    })
 }
 
 </script>

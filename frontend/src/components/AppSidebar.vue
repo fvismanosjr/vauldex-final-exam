@@ -8,18 +8,47 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarFooter,
+    useSidebar,
 } from '@/components/ui/sidebar'
 
-import { Home } from 'lucide-vue-next'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Home, LogOut, ChevronsUpDown } from 'lucide-vue-next'
+import { useUserStore } from '@/stores/userStore'
+import { logoutUser } from '@/services/auth'
+import { useRouter } from 'vue-router'
+
+const { isMobile } = useSidebar()
+const router = useRouter();
+const user = useUserStore()
+user.loadUser();
 
 // Menu items.
 const items = [
     {
         title: 'Dashboard',
-        url: '#',
+        url: '/dashboard',
         icon: Home,
     },
 ]
+
+const logoutUserEvent = async () => {
+    await logoutUser()
+
+    user.clearUser()
+    router.push({
+        name: "login"
+    })
+}
 </script>
 
 <template>
@@ -41,5 +70,45 @@ const items = [
                 </SidebarGroupContent>
             </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger as-child>
+                            <SidebarMenuButton size="lg"
+                                class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                                <Avatar class="h-8 w-8 rounded-lg">
+                                    <AvatarFallback class="rounded-lg">CN</AvatarFallback>
+                                </Avatar>
+                                <div class="grid flex-1 text-left text-sm leading-tight">
+                                    <span class="truncate font-medium">{{ user.user.name }}</span>
+                                    <span class="truncate text-xs">{{ user.user.email }}</span>
+                                </div>
+                                <ChevronsUpDown class="ml-auto size-4" />
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                            :side="isMobile ? 'bottom' : 'right'" align="end" :side-offset="4">
+                            <DropdownMenuLabel class="p-0 font-normal">
+                                <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                    <Avatar class="h-8 w-8 rounded-lg">
+                                        <AvatarFallback class="rounded-lg">CN</AvatarFallback>
+                                    </Avatar>
+                                    <div class="grid flex-1 text-left text-sm leading-tight">
+                                        <span class="truncate font-semibold">{{ user.user.name }}</span>
+                                        <span class="truncate text-xs">{{ user.user.email }}</span>
+                                    </div>
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem @click.prevent="logoutUserEvent">
+                                <LogOut />
+                                Log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
     </Sidebar>
 </template>
