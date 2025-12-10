@@ -6,9 +6,6 @@ import java.time.LocalDateTime
 
 data class ActivityRequest(
     @field:Min(1)
-    val userId: Long,
-
-    @field:Min(1)
     val activityTypeId: Long,
 
     @field:NotBlank

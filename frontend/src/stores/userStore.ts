@@ -3,7 +3,11 @@ import { ref } from 'vue'
 import type { UserType } from '@/types/types'
 
 export const useUserStore = defineStore('user', () => {
-    const user = ref<UserType | null>(null)
+    const user = ref<UserType>({
+        id: 0,
+        name: "",
+        email: ""
+    })
 
     // Load from localStorage on init
     const loadUser = () => {
@@ -19,7 +23,12 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const clearUser = () => {
-        user.value = null
+        user.value = {
+            id: 0,
+            name: "",
+            email: ""
+        }
+        
         localStorage.removeItem('user')
     }
 
