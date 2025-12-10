@@ -3,6 +3,20 @@ import { useUserStore } from "@/stores/userStore";
 
 const AUTH_API_URL = "http://localhost:8080/auth"
 
+export const isAuthenticated = async () => {
+    try {
+        const response = await fetch(`${AUTH_API_URL}/me`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error checking authentication:", error);
+        return false;
+    }
+}
+
 export const loginUser = async (auth: LoginType) => {
     const user = useUserStore();
 

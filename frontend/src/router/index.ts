@@ -4,11 +4,12 @@ import LoginForm from '@/components/LoginForm.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
 import Dashboard from '@/pages/dashboardPage.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import { isAuthenticated } from '@/services/auth'
 
 const router = createRouter({
-	history: createWebHistory(import.meta.env.BASE_URL),
-	routes: [
-		{
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+        {
             path: "/login",
             name: "login",
             alias: "/",
@@ -35,7 +36,23 @@ const router = createRouter({
                 layout: DefaultLayout
             }
         }
-	],
+    ],
+})
+
+router.beforeEach(async (to) => {
+    const authenticated = await isAuthenticated()
+
+    if (to.meta.guestOnly && !authenticated) {
+        return true;
+    }
+
+    if (authenticated && to.meta.guestOnly) {
+        return { name: "dashboard" }
+    }
+
+    if (!authenticated) {
+        return { name: "login" }
+    }
 })
 
 export default router

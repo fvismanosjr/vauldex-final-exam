@@ -28,4 +28,7 @@ class AuthController(
 
     @PostMapping("/logout")
     fun logout(response: HttpServletResponse) = userService.logout(response)
+
+    @GetMapping("/me")
+    fun me() = "Authenticated"
 }
