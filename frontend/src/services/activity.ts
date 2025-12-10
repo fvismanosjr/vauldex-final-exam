@@ -1,4 +1,4 @@
-import type { ActivityRequestType, FilterActivityType } from "@/types/types";
+import type { ActivityRequestType, FilterActivityType, PaginationType } from "@/types/types";
 import { useUserStore } from "@/stores/userStore";
 
 const USER_API_URL = "http://localhost:8080/users"
@@ -12,11 +12,20 @@ export const getActivityTypes = async () => {
     })
 }
 
-export const getActivities = async (filter: FilterActivityType) => {
+export const getActivities = async (filter: FilterActivityType, pagination: PaginationType) => {
     const user = useUserStore();
     user.loadUser()
 
     let endpointUrl = `${USER_API_URL}/${user.user.id}/activities`;
+
+    if (pagination) {
+        const paginationToString = Object.entries(pagination)
+            .filter(([key, value]) => key != "totalElements" && value !== null && value !== undefined && value !== "")
+            .map(([key, value]) => `${key}=${value}`)
+            .join("&")
+
+        endpointUrl += `?${paginationToString}`
+    }
 
     if (filter) {
         const filterToString = Object.entries(filter)
@@ -24,7 +33,7 @@ export const getActivities = async (filter: FilterActivityType) => {
             .map(([key, value]) => `${key}=${value}`)
             .join("and")
 
-        endpointUrl += `?filters=${filterToString}`
+        endpointUrl += filterToString.length ? `&filters=${filterToString}` : ""
     }
 
     return await fetch(endpointUrl, {

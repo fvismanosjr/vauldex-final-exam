@@ -38,3 +38,9 @@ export interface FilterActivityType {
     activityTypeId: number,
     createdAt: string,
 }
+
+export interface PaginationType {
+    totalElements: number,
+    size: number,
+    page: number,
+}

@@ -101,7 +101,7 @@ class ActivityService(
         activityId: Long,
     ) {
         // check if user exists
-        val user = userRepository.findById(userId).orElseThrow()
+        userRepository.findById(userId).orElseThrow()
 
         // check if activity exists
         val activity = activityRepository.findById(activityId).orElseThrow()
