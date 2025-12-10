@@ -1,4 +1,4 @@
-import type { ActivityRequestType } from "@/types/types";
+import type { ActivityRequestType, FilterActivityType } from "@/types/types";
 import { useUserStore } from "@/stores/userStore";
 
 const USER_API_URL = "http://localhost:8080/users"
@@ -12,11 +12,22 @@ export const getActivityTypes = async () => {
     })
 }
 
-export const getActivities = async () => {
+export const getActivities = async (filter: FilterActivityType) => {
     const user = useUserStore();
     user.loadUser()
 
-    return await fetch(`${USER_API_URL}/${user.user.id}/activities`, {
+    let endpointUrl = `${USER_API_URL}/${user.user.id}/activities`;
+
+    if (filter) {
+        const filterToString = Object.entries(filter)
+            .filter(([, value]) => value !== null && value !== undefined && value !== "" && value !== 0)
+            .map(([key, value]) => `${key}=${value}`)
+            .join("and")
+
+        endpointUrl += `?filters=${filterToString}`
+    }
+
+    return await fetch(endpointUrl, {
         method: "GET",
         credentials: "include",
     }).then(async (response) => {

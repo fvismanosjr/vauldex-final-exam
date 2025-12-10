@@ -18,8 +18,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { registerUser } from "@/services/auth"
 import type { RegisterType } from "@/types/types"
+import { useRouter } from "vue-router";
 import { ref } from "vue"
 
+const router = useRouter();
 const user = ref<RegisterType>({
     email: "",
     name: "",
@@ -29,6 +31,9 @@ const user = ref<RegisterType>({
 
 const register = async () => {
     await registerUser(user.value)
+    router.push({
+        name: "login"
+    })
 }
 </script>
 

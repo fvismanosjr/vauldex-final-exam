@@ -33,3 +33,8 @@ export interface ActivityType {
     description: string,
     createdAt: string,
 }
+
+export interface FilterActivityType {
+    activityTypeId: number,
+    createdAt: string,
+}

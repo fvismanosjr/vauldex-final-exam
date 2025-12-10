@@ -6,8 +6,12 @@ import com.example.final_exam.entity.Activity
 import com.example.final_exam.repository.ActivityRepository
 import com.example.final_exam.repository.ActivityTypeRepository
 import com.example.final_exam.repository.UserRepository
+import com.example.final_exam.specification.ActivitySpecs
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class ActivityService(
@@ -17,8 +21,31 @@ class ActivityService(
 ) {
     fun findAll(
         userId: Long,
+        filters: String?,
         pageable: Pageable
-    ) = activityRepository.findAllByUserId(userId, pageable).map { it.toResponse() }
+    ): Page<ActivityResponse> {
+
+        val filterMap: Map<String, String> = filters
+            ?.split("and")
+            ?.mapNotNull { it.split("=").takeIf { p -> p.size == 2 } }
+            ?.associate { it[0] to it[1] }
+            .orEmpty()
+
+        // map filter keys to their Specification functions
+        val specs = filterMap.mapNotNull { (key, value) ->
+            when (key) {
+                "userId" -> ActivitySpecs.userEquals(value.toLong())
+                "activityTypeId" -> ActivitySpecs.activityTypeEquals(value.toLong())
+                "description" -> ActivitySpecs.descriptionEquals(value)
+                "createdAt" -> ActivitySpecs.createdAtEquals(LocalDate.parse(value))
+                else -> null
+            }
+        }
+
+        val finalSpec = if (specs.isNotEmpty()) Specification.allOf(specs) else null
+
+        return activityRepository.findAll(finalSpec, pageable).map { it.toResponse() }
+    }
 
     fun findById(
         userId: Long,

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -28,13 +29,14 @@ class ActivityController(
    @ResponseStatus(HttpStatus.OK)
     fun findAll(
         @PathVariable userId: Long,
+        @RequestParam filters: String?,
         @PageableDefault(
             page = 0,
             size = 10,
             sort = ["id"],
             direction = Sort.Direction.ASC
         ) pageable: Pageable
-    ) = activityService.findAll(userId, pageable)
+    ) = activityService.findAll(userId, filters, pageable)
 
     @GetMapping("/{activityId}")
     @ResponseStatus(HttpStatus.OK)
