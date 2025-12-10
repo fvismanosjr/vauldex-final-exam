@@ -33,7 +33,8 @@ export const getActivities = async (filter: FilterActivityType, pagination: Pagi
             .map(([key, value]) => `${key}=${value}`)
             .join("and")
 
-        endpointUrl += filterToString.length ? `&filters=${filterToString}` : ""
+        endpointUrl += `&filters=userId=${user.user.id}`
+        endpointUrl += filterToString.length ? `and${filterToString}` : ""
     }
 
     return await fetch(endpointUrl, {
