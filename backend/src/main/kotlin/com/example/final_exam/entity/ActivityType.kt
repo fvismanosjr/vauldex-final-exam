@@ -1,6 +1,6 @@
 package com.example.final_exam.entity
 
-import com.example.final_exam.dto.UserResponse
+import com.example.final_exam.dto.ActivityTypeResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -10,29 +10,22 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "users")
-class User (
+@Table(name = "activity_types")
+class ActivityType(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
 
-    @Column(name = "email")
-    var email: String,
-
     @Column(name = "name")
     var name: String,
 
-    @Column(name = "password")
-    var password: String,
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "activityType")
     var activities: MutableList<Activity> = mutableListOf()
 ) {
-    fun toResponse(): UserResponse {
-        return UserResponse(
+    fun toResponse(): ActivityTypeResponse {
+        return ActivityTypeResponse(
             this.id,
-            this.name,
-            this.email,
+            this.name
         )
     }
 }
